@@ -13,13 +13,9 @@
     <!-- Optional: icons (for buttons) -->
 
     <link
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      integrity="sha512-pb3Xg8GZp7b9u5nYq7X5YtYv3r0Xo6e9J2Vv1o1zYQe0R6H9F9q2n0Y4q2J4h5Zx8F5Qf8Y3a1Qf2g3a4b5c6w=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
     />
-
     <style>
       :root {
         --blue: #0ea5e9;
@@ -98,7 +94,11 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
-
+      .btn-delete {
+        background: transparent;
+        color: var(--danger);
+        border: 1px solid rgba(3, 105, 161, 0.08);
+      }
       table {
         width: 100%;
         border-collapse: collapse;
@@ -213,7 +213,6 @@
           </div>
         </div>
 
-        ```
         <div class="toolbar">
           <button class="btn" @click="openCreate">
             <i class="fa-solid fa-plus"></i> Adicionar
@@ -259,7 +258,10 @@
                   <button class="btn secondary" @click="openEdit(contato)">
                     <i class="fa-solid fa-pen-to-square"></i> Editar
                   </button>
-                  <button class="btn ghost" @click="confirmDelete(contato)">
+                  <button
+                    class="btn btn-delete"
+                    @click="confirmDelete(contato)"
+                  >
                     <i class="fa-solid fa-trash"></i> Excluir
                   </button>
                 </div>
@@ -380,28 +382,6 @@
           </div>
         </div>
       </div>
-
-      <!-- hint / env note -->
-      <div style="margin-top: 18px" class="small muted card">
-        <div style="padding: 10px">
-          <strong>Nota:</strong>
-          Este é um frontend estático em um único arquivo. Para integrar com sua
-          API:
-          <ul>
-            <li>
-              Defina a constante <code>API_BASE</code> no topo do script (ou
-              substitua pela URL do seu backend).
-            </li>
-            <li>
-              Endpoints esperados: <code>GET /api/contatos</code>,
-              <code>POST /api/contatos</code>,
-              <code>PATCH /api/contatos/:id</code>,
-              <code>DELETE /api/contatos/:id</code>.
-            </li>
-          </ul>
-        </div>
-      </div>
-      ```
     </div>
 
     <script>
@@ -512,7 +492,7 @@
 
           async function fetchContatos() {
             try {
-              const res = await fetch(`${API_BASE}/contatos`);
+              const res = await fetch(`${API_BASE}/contacts`);
               if (!res.ok) throw new Error("Erro ao buscar contatos");
               contatos.value = await res.json();
             } catch (err) {
@@ -529,7 +509,7 @@
             };
             try {
               if (isEditing.value) {
-                const res = await fetch(`${API_BASE}/contatos/${form.id}`, {
+                const res = await fetch(`${API_BASE}/contacts/${form.id}`, {
                   method: "PATCH",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -539,7 +519,7 @@
                 });
                 if (!res.ok) throw new Error("Falha ao atualizar contato");
               } else {
-                const res = await fetch(`${API_BASE}/contatos`, {
+                const res = await fetch(`${API_BASE}/contacts`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -565,7 +545,7 @@
           async function deleteContatoConfirmed() {
             try {
               const res = await fetch(
-                `${API_BASE}/contatos/${contatoToDelete.value.id}`,
+                `${API_BASE}/contacts/${contatoToDelete.value.id}`,
                 { method: "DELETE" }
               );
               if (!(res.ok || res.status === 204))
