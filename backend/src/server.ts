@@ -1,6 +1,7 @@
 import express from "express";
 import { AppDataSource } from "./data-source";
 import contactsRoutes from "./routes/contacts.routes";
+import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -12,6 +13,7 @@ async function start() {
 
     const app = express();
     app.use(express.json());
+    app.use(cors());
 
     app.use("/api", contactsRoutes);
 
