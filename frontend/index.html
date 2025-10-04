@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contatos — Vue 3 Single File HTML</title>
+
+    <!-- Vue 3 (global build) -->
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <!-- Optional: icons (for buttons) -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-pb3Xg8GZp7b9u5nYq7X5YtYv3r0Xo6e9J2Vv1o1zYQe0R6H9F9q2n0Y4q2J4h5Zx8F5Qf8Y3a1Qf2g3a4b5c6w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --blue: #0ea5e9;
+        --blue-dark: #0369a1;
+        --bg: #f6f8fa;
+        --card: #ffffff;
+        --danger: #ef4444;
+        --muted: #6b7280;
+        --success: #10b981;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(180deg, var(--bg), #eef2f7);
+        padding: 24px;
+        color: #0f172a;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+        padding: 16px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .btn {
+        border: none;
+        background: var(--blue);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        font-weight: 600;
+      }
+      .btn.secondary {
+        background: transparent;
+        color: var(--blue-dark);
+        border: 1px solid rgba(3, 105, 161, 0.08);
+      }
+      .btn.ghost {
+        background: transparent;
+        color: var(--muted);
+        border: none;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid #eef2f5;
+        font-size: 14px;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 13px;
+      }
+      tr.highlight {
+        background: linear-gradient(
+          90deg,
+          rgba(14, 165, 233, 0.08),
+          rgba(14, 165, 233, 0.03)
+        );
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 18px;
+      }
+      .modal {
+        width: 100%;
+        max-width: 520px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 12px 40px rgba(2, 6, 23, 0.2);
+        padding: 18px;
+      }
+      .modal .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: #0f172a;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #e6e9ef;
+        outline: none;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      .field {
+        margin-bottom: 12px;
+      }
+      .error {
+        color: var(--danger);
+        font-size: 13px;
+        margin-top: 6px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* small */
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* responsive */
+      @media (max-width: 640px) {
+        .toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        th,
+        td {
+          font-size: 13px;
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <header>
+        <div>
+          <h1>Agenda de Contatos</h1>
+          <div class="small">
+            Gerencie seus contatos — crie, edite e exclua facilmente.
+          </div>
+        </div>
+
+        ```
+        <div class="toolbar">
+          <button class="btn" @click="openCreate">
+            <i class="fa-solid fa-plus"></i> Adicionar
+          </button>
+        </div>
+      </header>
+
+      <main class="card">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div class="muted">Lista de contatos</div>
+          <div class="muted">Total: {{ contatos.length }}</div>
+        </div>
+
+        <table aria-label="Tabela de contatos" role="table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th style="width: 160px">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="contatos.length === 0">
+              <td colspan="3" class="muted">
+                Nenhum contato encontrado — adicione um novo.
+              </td>
+            </tr>
+            <tr
+              v-for="contato in contatos"
+              :key="contato.id"
+              :class="{ highlight: dddOf(contato.telefone) === '11' }"
+            >
+              <td>{{ contato.nome }}</td>
+              <td>{{ formatPhoneDisplay(contato.telefone) }}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn secondary" @click="openEdit(contato)">
+                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                  </button>
+                  <button class="btn ghost" @click="confirmDelete(contato)">
+                    <i class="fa-solid fa-trash"></i> Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+
+      <!-- Create / Edit Modal -->
+      <div v-if="modalOpen" class="modal-backdrop" @click.self="closeModal">
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="isEditing ? 'Editar contato' : 'Criar contato'"
+        >
+          <div class="modal-header">
+            <strong>{{ isEditing ? 'Editar contato' : 'Novo contato' }}</strong>
+            <div>
+              <button class="btn ghost" @click="closeModal">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input
+                id="nome"
+                type="text"
+                v-model="form.nome"
+                @input="validateNome"
+                placeholder="Ex.: João Silva"
+              />
+              <div v-if="errors.nome" class="error">{{ errors.nome }}</div>
+            </div>
+
+            <div class="field">
+              <label for="telefone">Telefone</label>
+              <input
+                id="telefone"
+                type="text"
+                v-model="form.telefone"
+                @input="onPhoneInput"
+                placeholder="(xx) xxxx-xxxx"
+                maxlength="15"
+              />
+              <div v-if="errors.telefone" class="error">
+                {{ errors.telefone }}
+              </div>
+              <div v-else class="muted">
+                Formato: (DD) 0000-0000 — apenas números.
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 8px;
+              "
+            >
+              <button class="btn secondary" @click="closeModal">
+                Cancelar
+              </button>
+              <button class="btn" :disabled="!isFormValid" @click="saveContato">
+                {{ isEditing ? 'Salvar' : 'Criar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete confirm modal -->
+      <div
+        v-if="deleteConfirmOpen"
+        class="modal-backdrop"
+        @click.self="deleteConfirmOpen = false"
+      >
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirmar exclusão"
+        >
+          <div class="modal-header">
+            <strong>Confirmar exclusão</strong>
+            <div>
+              <button class="btn ghost" @click="deleteConfirmOpen = false">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p>
+              Tem certeza que deseja excluir
+              <strong>{{ contatoToDelete?.nome }}</strong>?
+            </p>
+            <div
+              style="
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 12px;
+              "
+            >
+              <button class="btn secondary" @click="deleteConfirmOpen = false">
+                Cancelar
+              </button>
+              <button class="btn" @click="deleteContatoConfirmed">
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- hint / env note -->
+      <div style="margin-top: 18px" class="small muted card">
+        <div style="padding: 10px">
+          <strong>Nota:</strong>
+          Este é um frontend estático em um único arquivo. Para integrar com sua
+          API:
+          <ul>
+            <li>
+              Defina a constante <code>API_BASE</code> no topo do script (ou
+              substitua pela URL do seu backend).
+            </li>
+            <li>
+              Endpoints esperados: <code>GET /api/contatos</code>,
+              <code>POST /api/contatos</code>,
+              <code>PATCH /api/contatos/:id</code>,
+              <code>DELETE /api/contatos/:id</code>.
+            </li>
+          </ul>
+        </div>
+      </div>
+      ```
+    </div>
+
+    <script>
+      // === CONFIG: integração com a API ===
+      const API_BASE = "http://localhost:8000/api"; // aqui apontamos para sua API
+
+      const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+      createApp({
+        setup() {
+          const contatos = ref([]);
+          const modalOpen = ref(false);
+          const isEditing = ref(false);
+          const deleteConfirmOpen = ref(false);
+          const contatoToDelete = ref(null);
+
+          const form = reactive({ id: null, nome: "", telefone: "" });
+          const errors = reactive({ nome: "", telefone: "" });
+
+          function validateNome() {
+            const val = (form.nome || "").trim();
+            if (!val) {
+              errors.nome = "Nome é obrigatório.";
+              return false;
+            }
+            const words = val.split(/\s+/).filter(Boolean);
+            if (words.length < 2) {
+              errors.nome = "O nome deve ter pelo menos duas palavras.";
+              return false;
+            }
+            for (const w of words)
+              if (w.length < 3) {
+                errors.nome = "Cada palavra deve ter ao menos 3 letras.";
+                return false;
+              }
+            errors.nome = "";
+            return true;
+          }
+
+          function validateTelefone() {
+            const raw = onlyDigits(form.telefone);
+            if (!raw) {
+              errors.telefone = "Telefone é obrigatório.";
+              return false;
+            }
+            if (!/^\d{10}$/.test(raw)) {
+              errors.telefone =
+                "Telefone inválido. Use formato (xx) xxxx-xxxx.";
+              return false;
+            }
+            errors.telefone = "";
+            return true;
+          }
+
+          function onlyDigits(s) {
+            return (s || "").replace(/\D/g, "");
+          }
+
+          function onPhoneInput(e) {
+            let v = onlyDigits(e.target.value);
+            if (v.length > 10) v = v.slice(0, 10);
+            const d1 = v.slice(0, 2),
+              d2 = v.slice(2, 6),
+              d3 = v.slice(6, 10);
+            let out = "";
+            if (d1) out = "(" + d1 + ")";
+            if (d2) out += " " + d2;
+            if (d3) out += "-" + d3;
+            form.telefone = out;
+            validateTelefone();
+          }
+
+          function dddOf(masked) {
+            const raw = onlyDigits(masked);
+            return raw.length >= 2 ? raw.slice(0, 2) : "";
+          }
+          function formatPhoneDisplay(masked) {
+            return masked || "";
+          }
+
+          const isFormValid = computed(
+            () => validateNome() && validateTelefone()
+          );
+
+          function openCreate() {
+            resetForm();
+            isEditing.value = false;
+            modalOpen.value = true;
+          }
+          function openEdit(contato) {
+            resetForm();
+            isEditing.value = true;
+            form.id = contato.id;
+            form.nome = contato.nome;
+            form.telefone = contato.telefone;
+            modalOpen.value = true;
+          }
+          function closeModal() {
+            modalOpen.value = false;
+          }
+          function resetForm() {
+            form.id = null;
+            form.nome = "";
+            form.telefone = "";
+            errors.nome = "";
+            errors.telefone = "";
+          }
+
+          async function fetchContatos() {
+            try {
+              const res = await fetch(`${API_BASE}/contatos`);
+              if (!res.ok) throw new Error("Erro ao buscar contatos");
+              contatos.value = await res.json();
+            } catch (err) {
+              console.error(err);
+              contatos.value = [];
+            }
+          }
+
+          async function saveContato() {
+            if (!isFormValid.value) return;
+            const payload = {
+              nome: form.nome.trim(),
+              telefone: onlyDigits(form.telefone),
+            };
+            try {
+              if (isEditing.value) {
+                const res = await fetch(`${API_BASE}/contatos/${form.id}`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    nome: payload.nome,
+                    telefone: payload.telefone,
+                  }),
+                });
+                if (!res.ok) throw new Error("Falha ao atualizar contato");
+              } else {
+                const res = await fetch(`${API_BASE}/contatos`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    nome: payload.nome,
+                    telefone: payload.telefone,
+                  }),
+                });
+                if (!res.ok) throw new Error("Falha ao criar contato");
+              }
+              await fetchContatos();
+              closeModal();
+            } catch (err) {
+              console.error(err);
+              alert("Erro ao salvar contato");
+            }
+          }
+
+          function confirmDelete(contato) {
+            contatoToDelete.value = contato;
+            deleteConfirmOpen.value = true;
+          }
+
+          async function deleteContatoConfirmed() {
+            try {
+              const res = await fetch(
+                `${API_BASE}/contatos/${contatoToDelete.value.id}`,
+                { method: "DELETE" }
+              );
+              if (!(res.ok || res.status === 204))
+                throw new Error("Falha ao deletar");
+              await fetchContatos();
+              deleteConfirmOpen.value = false;
+            } catch (err) {
+              console.error(err);
+              alert("Erro ao excluir contato");
+            }
+          }
+
+          onMounted(fetchContatos);
+
+          return {
+            contatos,
+            modalOpen,
+            openCreate,
+            openEdit,
+            closeModal,
+            form,
+            errors,
+            onPhoneInput,
+            saveContato,
+            isFormValid,
+            isEditing,
+            dddOf,
+            formatPhoneDisplay,
+            deleteConfirmOpen,
+            contatoToDelete,
+            confirmDelete,
+            deleteContatoConfirmed,
+            validateNome,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
