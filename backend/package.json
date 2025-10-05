@@ -7,10 +7,6 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "migration:create": "typeorm-ts-node-commonjs migration:create",
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/data-source.ts",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./src/data-source.ts"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
