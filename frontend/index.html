@@ -189,6 +189,15 @@
         color: var(--muted);
       }
 
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* scroll suave em iOS */
+      }
+      .table-responsive table {
+        min-width: 600px; /* força largura mínima */
+      }
+
       /* responsive */
       @media (max-width: 640px) {
         .toolbar {
@@ -232,43 +241,45 @@
           <div class="muted">Total: {{ contatos.length }}</div>
         </div>
 
-        <table aria-label="Tabela de contatos" role="table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Telefone</th>
-              <th style="width: 160px">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="contatos.length === 0">
-              <td colspan="3" class="muted">
-                Nenhum contato encontrado — adicione um novo.
-              </td>
-            </tr>
-            <tr
-              v-for="contato in contatos"
-              :key="contato.id"
-              :class="{ highlight: dddOf(contato.telefone) === '11' }"
-            >
-              <td>{{ contato.nome }}</td>
-              <td>{{ formatPhoneDisplay(contato.telefone) }}</td>
-              <td>
-                <div class="actions">
-                  <button class="btn secondary" @click="openEdit(contato)">
-                    <i class="fa-solid fa-pen-to-square"></i> Editar
-                  </button>
-                  <button
-                    class="btn btn-delete"
-                    @click="confirmDelete(contato)"
-                  >
-                    <i class="fa-solid fa-trash"></i> Excluir
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table aria-label="Tabela de contatos" role="table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th style="width: 160px">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="contatos.length === 0">
+                <td colspan="3" class="muted">
+                  Nenhum contato encontrado — adicione um novo.
+                </td>
+              </tr>
+              <tr
+                v-for="contato in contatos"
+                :key="contato.id"
+                :class="{ highlight: dddOf(contato.telefone) === '11' }"
+              >
+                <td>{{ contato.nome }}</td>
+                <td>{{ formatPhoneDisplay(contato.telefone) }}</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn secondary" @click="openEdit(contato)">
+                      <i class="fa-solid fa-pen-to-square"></i> Editar
+                    </button>
+                    <button
+                      class="btn btn-delete"
+                      @click="confirmDelete(contato)"
+                    >
+                      <i class="fa-solid fa-trash"></i> Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </main>
 
       <!-- Create / Edit Modal -->

@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 8000
 
 # Rodar migrations automaticamente e depois iniciar o servidor
-CMD sh -c "npm run migration:run && npm run start:dev"
+CMD sh -c "npm run start:dev"
